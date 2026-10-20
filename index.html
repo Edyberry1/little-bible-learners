@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#3157a4">
+<title>Little Bible Learners</title>
+
+<style>
+:root{--blue:#3157a4;--blue2:#eaf0ff;--gold:#ffd166;--green:#287a54;--ink:#202b45;--paper:#fffdf7;--pink:#ffe8e5}
+*{box-sizing:border-box}body{margin:0;background:#f2f5ff;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:18px;line-height:1.5}
+header{background:linear-gradient(135deg,#3157a4,#6687d5);color:white;padding:20px 16px 16px;text-align:center}
+header .logo{font-size:42px;line-height:1}h1{font-size:clamp(1.65rem,5vw,2.4rem);margin:8px 0 3px}header p{margin:0;font-size:1rem}
+main{max-width:900px;margin:0 auto;padding:14px}
+.toolbar,.tabs,.actions,.levelrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center}
+.toolbar{margin-top:12px}.tabs{margin:14px 0}
+button,select{font:inherit;border:2px solid #d4ddf5;border-radius:14px;padding:10px 14px;background:white;color:var(--ink);cursor:pointer}
+button:focus-visible,select:focus-visible{outline:3px solid #f2b632;outline-offset:2px}
+button.primary{background:var(--blue);border-color:var(--blue);color:white;font-weight:700}
+button.active{background:var(--gold);border-color:#dca82c;font-weight:800}
+button:disabled{opacity:.4;cursor:not-allowed}
+.panel{background:white;border:1px solid #e1e7f7;border-radius:22px;padding:18px;margin:12px 0;box-shadow:0 4px 16px #243e7b0c}
+.kicker{color:var(--blue);font-weight:800;text-transform:uppercase;letter-spacing:.07em;font-size:.78rem}
+h2{font-size:1.55rem;margin:4px 0 8px}h3{margin:5px 0 8px}
+.storyart{display:flex;justify-content:center;align-items:center;background:linear-gradient(180deg,#eaf4ff,#fff8df);border-radius:18px;padding:10px;margin:12px 0}
+.storyart svg{width:min(100%,420px);height:auto;max-height:220px}
+.storytext{font-size:1.25rem;line-height:1.65;max-width:700px;margin:12px auto}
+.storytext.easy{font-size:1.55rem;line-height:1.7}
+.verse{background:#fff4c8;border-left:6px solid #e7b432;padding:12px 14px;border-radius:12px;font-weight:650}
+.storygrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.storycard{border:2px solid #e3e9f8;border-radius:16px;padding:12px;text-align:left;background:#fff;display:flex;gap:10px;align-items:center}
+.storycard .mini{font-size:34px}.storycard span:last-child{display:block}
+.storycard small{display:block;color:#5b6681}
+.quiz-option{display:block;width:100%;text-align:left;margin:8px 0;border-radius:14px;padding:13px}
+.feedback{padding:12px;border-radius:12px;margin-top:10px;font-weight:700}
+.good{background:#e2f7e9;color:#145c37}.try{background:#fff0d7;color:#754800}
+.progressbar{height:16px;background:#e7ecf8;border-radius:99px;overflow:hidden}.progressbar div{height:100%;background:#39a76b;width:0;transition:width .25s}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#f1f5ff;border-radius:14px;padding:12px;text-align:center}.stat strong{display:block;font-size:1.6rem;color:var(--blue)}
+footer{text-align:center;color:#65708a;font-size:.85rem;padding:16px}
+.hidden{display:none!important}.muted{color:#65708a}.small{font-size:.9rem}
+@media(max-width:520px){body{font-size:17px}main{padding:10px}.panel{padding:14px}.statgrid{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}.storytext{font-size:1.15rem}.storytext.easy{font-size:1.35rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" aria-hidden="true">📖⭐</div>
+  <h1>Little Bible Learners</h1>
+  <p>Small stories. Big lessons. God loves you!</p>
+  <div class="toolbar">
+    <label for="level" class="small">Reading level</label>
+    <select id="level" aria-label="Choose reading level">
+      <option value="easy">Little Reader (short sentences)</option>
+      <option value="standard">Growing Reader (more detail)</option>
+    </select>
+    <button id="installBtn" class="hidden">Install app</button>
+  </div>
+</header>
+<main>
+  <nav class="tabs" aria-label="Main sections">
+    <button class="active" data-tab="stories">📚 Stories</button>
+    <button data-tab="quiz">🧠 Quiz time</button>
+    <button data-tab="progress">🏅 My progress</button>
+  </nav>
+
+  <section id="stories">
+    <div class="panel">
+      <div class="kicker">Choose a Bible story</div>
+      <h2 id="storyTitle">Noah and the Big Boat</h2>
+      <div id="storyArt" class="storyart" aria-label="Story illustration"></div>
+      <div id="storyText" class="storytext"></div>
+      <div class="verse"><span>💛 Memory verse</span><div id="verseText"></div><small id="verseRef"></small></div>
+      <div class="actions" style="margin-top:14px">
+        <button id="prevStory">← Previous</button>
+        <button id="markRead" class="primary">✓ I read this!</button>
+        <button id="nextStory">Next story →</button>
+      </div>
+      <p id="readStatus" class="muted small" style="text-align:center;margin-bottom:0"></p>
+    </div>
+    <div class="panel">
+      <h2>Pick another story</h2>
+      <div id="storyList" class="storygrid"></div>
+    </div>
+  </section>
+
+  <section id="quiz" class="hidden">
+    <div class="panel">
+      <div class="kicker">Think and choose</div>
+      <h2 id="quizTitle">Story quiz</h2>
+      <p id="quizQuestion"></p>
+      <div id="quizOptions"></div>
+      <div id="quizFeedback" aria-live="polite"></div>
+      <div class="actions"><button id="newQuestion" class="primary">Another question</button></div>
+    </div>
+  </section>
+
+  <section id="progress" class="hidden">
+    <div class="panel">
+      <div class="kicker">Your learning journey</div>
+      <h2>Look how far you have come!</h2>
+      <div class="statgrid">
+        <div class="stat"><strong id="readCount">0</strong>Stories read</div>
+        <div class="stat"><strong id="quizCount">0</strong>Quiz answers</div>
+        <div class="stat"><strong id="scoreCount">0%</strong>Quiz score</div>
+      </div>
+      <p style="margin-bottom:6px"><strong>Stories you have read</strong></p>
+      <div class="progressbar"><div id="progressFill"></div></div>
+      <p id="progressSummary" class="muted small"></p>
+      <div id="progressStories" class="storygrid"></div>
+      <div class="actions" style="margin-top:18px"><button id="resetProgress">Start progress again</button></div>
+      <p class="small muted">Progress is saved on this device in this browser. It is not sent anywhere.</p>
+    </div>
+  </section>
+  <footer>Made for curious little hearts 💛<br>For learning and family reading, not a replacement for reading the Bible together.</footer>
+</main>
+<script>
+const stories = [
+ {id:"noah",title:"Noah and the Big Boat",emoji:"🛶",art:"ark",easy:["God told Noah to build a big boat.","Noah obeyed God.","Animals came into the boat.","God kept Noah and his family safe."],standard:["God told Noah to build a large boat called an ark.","Noah listened to God and built it.","Animals came into the ark, two of many kinds.","God kept Noah, his family, and the animals safe."],verse:"Noah did everything just as God commanded him.",ref:"Genesis 6:22",q:"What did Noah build?",opts:["A big boat","A tall tower","A little shop"],correct:0,lesson:"We can listen to God and obey."},
+ {id:"david",title:"David and Goliath",emoji:"🪨",art:"david",easy:["Goliath was a very big soldier.","David was a young shepherd.","David trusted God.","With a stone, David defeated Goliath."],standard:["Goliath was a giant soldier who frightened the people.","David was a young shepherd who trusted God.","David used a sling and a stone.","David knew that God was with him."],verse:"The battle is the Lord's.",ref:"1 Samuel 17:47",q:"Who trusted God and faced Goliath?",opts:["David","Pharaoh","Jonah"],correct:0,lesson:"God can help us be brave."},
+ {id:"moses",title:"Baby Moses",emoji:"🧺",art:"moses",easy:["A baby named Moses was in danger.","His mother put him in a basket.","The basket floated on the river.","Moses was found and cared for."],standard:["Moses' mother wanted to keep him safe.","She placed him gently in a basket among the reeds by the river.","Pharaoh's daughter found the baby and cared for him.","God had a special plan for Moses."],verse:"God is our refuge and strength.",ref:"Psalm 46:1",q:"Where did Moses' mother place him?",opts:["In a basket by the river","On a mountain","In a tree"],correct:0,lesson:"God cares for us."},
+ {id:"daniel",title:"Daniel and the Lions",emoji:"🦁",art:"daniel",easy:["Daniel loved God and prayed.","Some men were not happy about it.","Daniel was put in a den of lions.","God kept Daniel safe."],standard:["Daniel prayed to God every day.","Some men made a rule to try to stop him praying.","Daniel was put into a den of lions.","God sent help, and Daniel was safe."],verse:"My God sent his angel.",ref:"Daniel 6:22",q:"What did Daniel do every day?",opts:["Prayed to God","Built a boat","Caught a whale"],correct:0,lesson:"Keep trusting God and doing what is right."},
+ {id:"jonah",title:"Jonah and the Big Fish",emoji:"🐳",art:"jonah",easy:["God asked Jonah to go to Nineveh.","Jonah ran away on a boat.","A big fish swallowed Jonah.","Jonah prayed, and God heard him."],standard:["God told Jonah to go to Nineveh and share a message.","Jonah tried to run away by sea.","A great fish swallowed Jonah, and he prayed to God.","God gave Jonah another chance to obey."],verse:"I called to the Lord, and he answered me.",ref:"Jonah 2:2",q:"What swallowed Jonah?",opts:["A big fish","A lion","A crocodile"],correct:0,lesson:"We can talk to God and choose to obey."},
+ {id:"jesus",title:"Jesus Is Born",emoji:"⭐",art:"nativity",easy:["Mary and Joseph went to Bethlehem.","Baby Jesus was born there.","Mary laid him in a manger.","Angels shared the good news."],standard:["Mary and Joseph travelled to Bethlehem.","Jesus was born and laid in a manger.","Angels told shepherds the joyful news.","Jesus came because God loves the world."],verse:"Today a Savior has been born to you.",ref:"Luke 2:11",q:"Where was baby Jesus laid?",opts:["In a manger","In a boat","In a basket"],correct:0,lesson:"Jesus is God's wonderful gift."},
+ {id:"storm",title:"Jesus Calms the Storm",emoji:"⛵",art:"storm",easy:["Jesus and his friends were in a boat.","A strong storm came.","Jesus told the wind and waves to be still.","The sea became calm."],standard:["Jesus and his disciples were crossing the lake in a boat.","A strong storm made the disciples afraid.","Jesus spoke, and the wind and waves became calm.","The disciples wondered at his power."],verse:"Even the wind and the waves obey him!",ref:"Mark 4:41",q:"What did Jesus calm?",opts:["The storm","A lion","A giant"],correct:0,lesson:"We can pray when we feel afraid."},
+ {id:"samaritan",title:"The Kind Samaritan",emoji:"💗",art:"good",easy:["A man was hurt on the road.","Some people passed him by.","A Samaritan stopped to help.","He showed love and kindness."],standard:["A traveller was hurt and left beside the road.","Some people saw him but did not stop.","A Samaritan cared for his wounds and took him to safety.","Jesus taught us to love our neighbours."],verse:"Love your neighbor as yourself.",ref:"Luke 10:27",q:"Who stopped to help the hurt man?",opts:["The Samaritan","A giant","A king"],correct:0,lesson:"Be kind and help people who need you."},
+ {id:"zacheus",title:"Zacchaeus Meets Jesus",emoji:"🌳",art:"tree",easy:["Zacchaeus wanted to see Jesus.","He was a small man.","He climbed a tree to see over the crowd.","Jesus called him by name."],standard:["Zacchaeus wanted to see Jesus, but the crowd was in his way.","He climbed a sycamore tree.","Jesus saw him and chose to visit his home.","Zacchaeus wanted to make things right."],verse:"The Son of Man came to seek and to save the lost.",ref:"Luke 19:10",q:"Why did Zacchaeus climb a tree?",opts:["To see Jesus","To pick a boat","To hide from a lion"],correct:0,lesson:"Jesus knows us and loves us."},
+ {id:"creation",title:"God Made the World",emoji:"🌈",art:"creation",easy:["God made the sky and the sea.","God made plants and animals.","God made people.","God saw that his creation was good."],standard:["God made the heavens, the earth, and the sea.","God made plants, stars, birds, and animals.","God made people in his image.","God saw all that he had made, and it was very good."],verse:"God saw all that he had made, and it was very good.",ref:"Genesis 1:31",q:"Who made the world?",opts:["God","Noah","David"],correct:0,lesson:"Thank God for the wonderful world."}
+];
+const $=id=>document.getElementById(id);
+let current=0, qIndex=0, feedbackShown=false;
+let saved={read:[],answered:0,correct:0};
+try{saved=Object.assign(saved,JSON.parse(localStorage.getItem("lbl-progress-v2")||"{}"));}catch(e){}
+const level=$("level");
+function save(){try{localStorage.setItem("lbl-progress-v2",JSON.stringify(saved));}catch(e){}}
+function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function art(type){
+ const start='<svg viewBox="0 0 360 180" role="img" aria-label="Colourful Bible story illustration" xmlns="http://www.w3.org/2000/svg">';
+ const end='</svg>';
+ const sky='<rect width="360" height="180" rx="16" fill="#dff1ff"/><circle cx="300" cy="28" r="17" fill="#ffd166"/>';
+ const hill='<path d="M0 145 Q75 100 150 145 T360 135 V180 H0Z" fill="#9bd5a3"/>';
+ const person=(x,y,shirt='#e76f51')=>`<circle cx="${x}" cy="${y-24}" r="11" fill="#9b5d3b"/><path d="M${x-13} ${y-12} Q${x} ${y-22} ${x+13} ${y-12} L${x+17} ${y+18} L${x-17} ${y+18}Z" fill="${shirt}"/><path d="M${x-7} ${y+18}L${x-10} ${y+35} M${x+7} ${y+18}L${x+10} ${y+35}" stroke="#65412f" stroke-width="6" stroke-linecap="round"/>`;
+ let scene=sky+hill;
+ if(type==='ark'){scene+='<path d="M25 125 L300 125 L270 158 L65 158Z" fill="#a96b38" stroke="#70451f" stroke-width="4"/><path d="M80 124V90H240V124" fill="#e8b15e" stroke="#70451f" stroke-width="4"/><path d="M65 90L160 55L255 90Z" fill="#b8783e" stroke="#70451f" stroke-width="4"/><rect x="137" y="93" width="45" height="31" rx="4" fill="#65412f"/><circle cx="55" cy="46" r="15" fill="#fff"/><circle cx="77" cy="44" r="19" fill="#fff"/><circle cx="95" cy="49" r="13" fill="#fff"/>';}
+ else if(type==='david'){scene+='<path d="M0 150 Q100 100 190 150 T360 145V180H0Z" fill="#77bf7a"/>'+person(105,110,'#4d9f70')+'<path d="M122 90Q145 78 154 96" fill="none" stroke="#70451f" stroke-width="4"/><circle cx="154" cy="96" r="5" fill="#a96b38"/><path d="M210 52L230 145H190Z" fill="#7c879c"/><circle cx="210" cy="40" r="13" fill="#9b5d3b"/><path d="M193 55H227L235 110H185Z" fill="#4b5a7a"/><path d="M196 62L224 85" stroke="#d7dce8" stroke-width="5"/>';}
+ else if(type==='moses'){scene+='<path d="M0 120Q90 105 180 125T360 118V180H0Z" fill="#70c6e8"/><path d="M0 145Q90 130 180 150T360 143" fill="none" stroke="#fff" stroke-width="3"/><path d="M115 110Q180 75 245 110L225 145H135Z" fill="#b77b42" stroke="#754a2b" stroke-width="4"/><path d="M135 111Q180 90 225 111" fill="none" stroke="#754a2b" stroke-width="4"/><circle cx="180" cy="100" r="13" fill="#9b5d3b"/><path d="M165 112Q180 103 195 112L201 133H159Z" fill="#f4c9b2"/>';}
+ else if(type==='daniel'){scene+='<rect x="25" y="95" width="310" height="80" rx="8" fill="#b8a0d9"/>'+person(180,112,'#f2bd57')+'<circle cx="80" cy="124" r="23" fill="#d99b52"/><circle cx="70" cy="117" r="4" fill="#302a24"/><circle cx="90" cy="117" r="4" fill="#302a24"/><path d="M68 133Q80 142 92 133" stroke="#70451f" stroke-width="3" fill="none"/><circle cx="280" cy="124" r="23" fill="#d99b52"/><circle cx="270" cy="117" r="4" fill="#302a24"/><circle cx="290" cy="117" r="4" fill="#302a24"/><path d="M268 133Q280 142 292 133" stroke="#70451f" stroke-width="3" fill="none"/>';}
+ else if(type==='jonah'){scene+='<path d="M0 115Q45 90 90 115T180 115T270 115T360 115V180H0Z" fill="#4e9dc9"/><path d="M85 135Q110 78 180 105Q225 123 260 143Q220 160 155 151Z" fill="#6bafc5" stroke="#277a95" stroke-width="4"/><circle cx="242" cy="132" r="3" fill="#183c50"/><path d="M265 140L283 147L265 153Z" fill="#f2a65a"/><circle cx="158" cy="104" r="8" fill="#9b5d3b"/><path d="M150 112L165 112L170 133L145 133Z" fill="#e76f51"/>';}
+ else if(type==='nativity'){scene+='<path d="M95 145L180 80L265 145Z" fill="#c9955d" stroke="#80562f" stroke-width="4"/><path d="M125 145V110H235V145" fill="#e9c28b"/><path d="M145 145Q180 115 215 145" fill="#80562f"/><circle cx="180" cy="124" r="13" fill="#f7d66a"/><path d="M170 131L190 131L197 146H163Z" fill="#fff4c8"/><path d="M180 8L185 20L198 21L188 29L191 42L180 34L169 42L172 29L162 21L175 20Z" fill="#ffcb45"/><circle cx="140" cy="93" r="11" fill="#9b5d3b"/><path d="M127 105H153L160 135H120Z" fill="#4d9f70"/><circle cx="220" cy="93" r="11" fill="#9b5d3b"/><path d="M207 105H233L240 135H200Z" fill="#5d7cc0"/>';}
+ else if(type==='storm'){scene+='<path d="M0 120Q55 100 110 120T220 120T360 120V180H0Z" fill="#3c8db8"/><path d="M110 112L260 112L230 145H140Z" fill="#b77b42" stroke="#70451f" stroke-width="4"/>'+person(180,96,'#e76f51')+'<path d="M40 35L60 50L44 58L67 75" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M285 55L305 68L289 77L312 91" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>';}
+ else if(type==='good'){scene+='<path d="M40 160L40 110L60 80L80 110L80 160Z" fill="#a96b38"/><circle cx="60" cy="65" r="42" fill="#55a66e"/>'+person(160,120,'#4d9f70')+person(230,127,'#e8a45d')+'<path d="M177 108Q193 90 208 108" fill="none" stroke="#e76f51" stroke-width="5"/>';}
+ else if(type==='tree'){scene+='<rect x="245" y="75" width="20" height="95" rx="5" fill="#a96b38"/><circle cx="255" cy="55" r="44" fill="#55a66e"/><circle cx="225" cy="70" r="29" fill="#68b978"/><circle cx="282" cy="72" r="29" fill="#68b978"/>'+person(165,120,'#e8a45d')+'<path d="M178 92L228 70" stroke="#70451f" stroke-width="4"/>';}
+ else {scene+='<circle cx="75" cy="55" r="27" fill="#f4d35e"/><path d="M0 125Q80 70 160 125T360 120V180H0Z" fill="#76bd7d"/><path d="M30 115L40 75L50 115Z" fill="#4d9f70"/><path d="M275 118L290 70L305 118Z" fill="#4d9f70"/><circle cx="210" cy="105" r="16" fill="#9b5d3b"/><path d="M192 123H228L240 158H180Z" fill="#e76f51"/><path d="M194 157L190 174M226 157L230 174" stroke="#65412f" stroke-width="6"/>';}
+ return start+scene+end;
+}
+function renderStory(){
+ const s=stories[current], lv=level.value;
+ $("storyTitle").textContent=s.title;$("storyArt").innerHTML=art(s.art);
+ $("storyText").className="storytext "+(lv==="easy"?"easy":"");
+ $("storyText").innerHTML=(lv==="easy"?s.easy:s.standard).map(x=>"<p>"+esc(x)+"</p>").join("")+"<p><strong>🌱 Lesson:</strong> "+esc(s.lesson)+"</p>";
+ $("verseText").textContent="“"+s.verse+"”";$("verseRef").textContent=s.ref;
+ $("readStatus").textContent=saved.read.includes(s.id)?"⭐ You have read this story!":"Read the story, then tap “I read this!”";
+ $("markRead").textContent=saved.read.includes(s.id)?"✓ Read already":"✓ I read this!";
+ $("prevStory").disabled=current===0;$("nextStory").disabled=current===stories.length-1;
+ renderStoryList();renderProgress();renderQuiz();
+}
+function renderStoryList(){
+ $("storyList").innerHTML=stories.map((s,i)=>`<button class="storycard" data-story="${i}"><span class="mini">${s.emoji}</span><span><strong>${s.title}</strong><small>${saved.read.includes(s.id)?"✓ Read":"Tap to read"}</small></span></button>`).join("");
+ document.querySelectorAll("[data-story]").forEach(b=>b.addEventListener("click",()=>{current=Number(b.dataset.story);renderStory();window.scrollTo({top:0,behavior:"smooth"});}));
+}
+function renderQuiz(){
+ const s=stories[qIndex%stories.length];$("quizTitle").textContent=s.title;$("quizQuestion").textContent=s.q;
+ $("quizOptions").innerHTML=s.opts.map((o,i)=>`<button class="quiz-option" data-answer="${i}">${String.fromCharCode(65+i)}. ${o}</button>`).join("");
+ $("quizFeedback").innerHTML="";feedbackShown=false;
+ document.querySelectorAll("[data-answer]").forEach(b=>b.addEventListener("click",()=>{
+   if(feedbackShown)return;feedbackShown=true;const ok=Number(b.dataset.answer)===s.correct;saved.answered++;if(ok)saved.correct++;save();
+   $("quizFeedback").innerHTML=`<div class="feedback ${ok?"good":"try"}">${ok?"🎉 Correct! Well done!":"🌼 Good try! The answer is: "+s.opts[s.correct]+"."}</div>`;
+   document.querySelectorAll("[data-answer]").forEach((x,i)=>{x.disabled=true;if(i===s.correct)x.style.borderColor="#39a76b";});
+   renderProgress();
+ }));
+}
+function renderProgress(){
+ const n=saved.read.length;$("readCount").textContent=n;$("quizCount").textContent=saved.answered;
+ $("scoreCount").textContent=saved.answered?Math.round(saved.correct/saved.answered*100)+"%":"0%";
+ $("progressFill").style.width=(n/stories.length*100)+"%";
+ $("progressSummary").textContent=`You have read ${n} of ${stories.length} stories. Keep going!`;
+ $("progressStories").innerHTML=stories.map(s=>`<div class="storycard"><span class="mini">${saved.read.includes(s.id)?"✅":"📘"}</span><span><strong>${s.title}</strong><small>${saved.read.includes(s.id)?"Read":"Not read yet"}</small></span></div>`).join("");
+}
+document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>{
+ document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));
+ ["stories","quiz","progress"].forEach(id=>$(id).classList.toggle("hidden",id!==b.dataset.tab));
+}));
+level.addEventListener("change",renderStory);
+$("prevStory").addEventListener("click",()=>{if(current>0){current--;renderStory();}});
+$("nextStory").addEventListener("click",()=>{if(current<stories.length-1){current++;renderStory();}});
+$("markRead").addEventListener("click",()=>{const id=stories[current].id;if(!saved.read.includes(id))saved.read.push(id);save();renderStory();});
+$("newQuestion").addEventListener("click",()=>{qIndex=(qIndex+1)%stories.length;renderQuiz();});
+$("resetProgress").addEventListener("click",()=>{if(confirm("Start your progress again? This clears saved scores on this device.")){saved={read:[],answered:0,correct:0};save();renderStory();}});
+renderStory();
+
+// PWA installation is available when this folder is served over HTTPS or localhost.
+let deferredPrompt;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;$("installBtn").classList.remove("hidden");});
+$("installBtn").addEventListener("click",async()=>{if(!deferredPrompt){alert("To install: open the hosted app in Chrome, then use the browser menu and choose Install app or Add to Home screen.");return;}deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$("installBtn").classList.add("hidden");});
+if("serviceWorker" in navigator && location.protocol!=="file:"){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}
+</script>
+</body>
+</html>
